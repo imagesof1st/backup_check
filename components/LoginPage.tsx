@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Music } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -12,7 +12,18 @@ const GoogleIcon = () => (
 )
 
 const LoginPage: React.FC = () => {
-  const { signInWithGoogle } = useAuth()
+  const { signInWithGoogle, loading } = useAuth()
+  const [isSigningIn, setIsSigningIn] = useState(false)
+
+  const handleSignIn = async () => {
+    setIsSigningIn(true)
+    try {
+      await signInWithGoogle()
+    } catch (error) {
+      console.error('Sign in failed:', error)
+      setIsSigningIn(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-3">
@@ -34,11 +45,21 @@ const LoginPage: React.FC = () => {
 
           <div className="space-y-4">
             <button
-              onClick={signInWithGoogle}
-              className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center space-x-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] border border-gray-700/50 active:scale-[0.98]"
+              onClick={handleSignIn}
+              disabled={loading || isSigningIn}
+              className="w-full bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-xl flex items-center justify-center space-x-3 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] border border-gray-700/50 active:scale-[0.98]"
             >
-              <GoogleIcon />
-              <span>Continue with Google</span>
+              {isSigningIn || loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <>
+                  <GoogleIcon />
+                  <span>Continue with Google</span>
+                </>
+              )}
             </button>
             
             <p className="text-gray-500 text-xs leading-relaxed px-2">

@@ -102,6 +102,26 @@ function MusicPlayerContent() {
     isActive: isSleepTimerActive
   } = useSleepTimer();
 
+  // Reset all state when user changes
+  useEffect(() => {
+    if (!user) {
+      setCurrentSong(null)
+      setIsPlaying(false)
+      setIsPlayerMaximized(false)
+      setCurrentTime(0)
+      setDuration(0)
+      setAudioUrl(null)
+      setPersonalizedList([])
+      setCurrentSongIndex(0)
+      setPlayedSongs(new Set())
+      setListenedSongs(new Set())
+      setCurrentBatchListenedSongs([])
+      setHasSetLastPlayedSong(false)
+      setLastPlayedSongDismissed(false)
+      clearQueue()
+    }
+  }, [user, clearQueue])
+
 const loadMoreSongs = () => {
   setDisplayCount(prev => prev + 15);
 };

@@ -836,9 +836,14 @@ try {
     const loadData = async () => {
       if (!user) {
         // Reset data when user logs out
+        songsCache.current = null
+        likedSongsCache.current = null
         setSongs([])
+        setPersonalizedSongs([])
+        setTrendingSongs([])
         setPlaylists([])
         setLikedSongs(new Set())
+        setRecentlyPlayedSongs([])
         setLastPlayedSong(null)
         setLoading(false)
         return
@@ -849,6 +854,14 @@ try {
         await Promise.all([fetchSongs(), fetchPlaylists(), fetchRecentlyPlayed()])
       } catch (error) {
         console.error('Error loading data:', error)
+        // Reset data on error
+        setSongs([])
+        setPersonalizedSongs([])
+        setTrendingSongs([])
+        setPlaylists([])
+        setLikedSongs(new Set())
+        setRecentlyPlayedSongs([])
+        setLastPlayedSong(null)
       } finally {
         setLoading(false)
       }
